@@ -1,0 +1,537 @@
+下面介绍css清除浮动的几个方法（实现上图效果）：
+
+**1.使用带clear属性的空元素**
+
+使用空标签清除浮动：在需要清除浮动的父级元素内部的所有浮动元素后添加一个空标签（理论上可以是任何标签，但常用<div>和<p>）清除浮动，并为其定义CSS代码clear:both
+
+111<div class="clear"></div>
+
+```
+   11``.clear{
+        ``clear:both;
+      ``}
+      
+```
+
+优点：简单，代码少，浏览器兼容性好。
+
+缺点：需要添加大量无语义的html元素，代码不够优雅，后期不容易维护。
+
+**2.使用CSS的overflow属性**
+
+使用overflow清除浮动：只需在需要清除浮动的元素中定义CSS代码overflow:auto或overflow:hidden即可。
+
+父亲没有高度 宽度百分比100% 如果里面孩子全部浮动有高度  给父亲添加背景颜色不会有效果 必须先给父亲添加overflow:hidden清除浮动
+
+优点：不存在结构和语义化问题，代码量极少
+
+缺点：内容增多时候容易造成不会自动换行导致内容被隐藏掉，无法显示需要溢出的元素
+
+**3.使用CSS的:after伪元素**
+
+对父元素使用:after伪元素，设置display:table
+
+display:table 使生成的元素以块级表格显示，占满剩余空间。
+
+通过content: " "生成内容作为最后一个元素，至于content里面是什么都是可以的，CSS经典的是 content:"."，有些版本可能content里面内容为空。
+
+```
+    111``.demo:after { 
+        ``content: " ";
+        ``display: table; 
+        ``clear: both; 
+      ``} 
+```
+
+缺点：适合现代浏览器，不支持IE6/7，*zoom: 1就是为了兼容IE6/7
+
+注意 如果出现全浮动 宽度100% 要看高度 更要注意清除浮动
+
+###### 行内样式
+
+ 11 <h2 style="color:rgb(255, 191, 191);size: 20px;">曲尽陈情</h2>
+
+###### 外部样式
+
+11 <!-- rel = "stylesheet" 关联样式表 -->
+
+11  <link rel="stylesheet" href="css/style.css">
+
+###### fieldset和legend的妙用
+
+/* -----------  排行榜  ---------- */
+
+/* 下面代码实现上面效果 */
+
+/* 通过改变 legend 的 margin 或者父元素的 padding-left ，可以控制标题的初始位置 */
+
+​    /*都不设置 文字默认最左侧  */
+
+​    /* fieldset 只设置上边框，通过给legend设置 margin: auto 将标题定位到中间， 通过 padding 控制两侧的留白。非常的完美。 */
+
+/* <div class="g-container"><fieldset><legend>排行榜</legend></fieldset></div>
+
+​    fieldset {
+
+​      width: 300px;
+
+​      height: 24px;
+
+​      border: 1px solid transparent;
+
+​      border-top-color: #000;
+
+​    }
+
+
+
+​    legend {
+
+​      margin: auto;
+
+​      padding: 0 10px;
+
+​    } */
+
+
+
+###### 表单对齐和fieldset和legend
+
+   11 <form>
+        <fieldset>
+         <legend>21天</legend>
+         <p><label>Name:</label><input type="text"></div>
+         <p> <label>Password:</label><input type="password"></p>
+        </fieldset>
+    </form>
+
+ /* 每一行表单分左右栏，所有左栏和右栏的长度都对应相等。
+
+所有左右栏盒子都设置左浮动
+
+左栏文字右对齐
+
+左栏和右栏总长度等于行宽 */
+
+​    /* 分两栏，宽度相等，盒子左浮动，文字右对齐，还有别忘了清除浮动 */
+
+​    fieldset {
+
+​      *width*: 280px;
+
+​      *height*: 200px;
+
+​      *border*: 1px solid yellow;
+
+​    }
+
+
+
+​    legend {
+
+​      *margin*: auto;
+
+​      *padding*: 0 10px;
+
+​    }
+
+
+
+​    p {
+
+​      *overflow*: hidden
+
+​    }
+
+
+
+​    label {
+
+​      *float*: left;
+
+​      *width*: 100px;
+
+​      *height*: 40px;
+
+​      *line-height*: 40px;
+
+​      *text-align*: right;
+
+​      *margin-right*: 10px;
+
+​    }
+
+
+
+​    input {
+
+​      *float*: left;
+
+​      *width*: 150px;
+
+​      *height*: 40px;
+
+​      *line-height*: 40px;
+
+​    }
+
+
+
+###### text-align justify
+
+​    <!-- justify 两端对齐 -->
+​    <!-- 　首先既然单行不行，那么就用多行。但是怎么用多行行呢？----用after。 -->
+​    <!-- span设置为float: left :after为inline-block  这样等于after宽度有效且百分百 相当于另起一行-->
+​    <!-- 所以下面必须两次换行 因为还有after元素占了下面一行 -->
+​    <div> <span>昵称：</span><input type="text" style="width:100px;"><br><br>
+​    <span>电子邮箱：</span><input type="text" style="width:100px;"><br><br>
+​    <!-- 既然justify是针对最后一行文本无效的，那我们可以借助伪元素将文本的整体行数变为多行,代码如下 -->
+
+​       span{
+
+​      *float*:left;
+
+​      *width*: 100px;
+
+​      *text-align*: justify;
+
+​    }
+
+​    span:after{
+
+​      *content*: '.';
+
+​      *width*: 100%;
+
+​      *display*:inline-block;
+
+​      *overflow*: hidden;
+
+​      *height*:0;
+
+​    }
+
+ <!-- 既然justify是针对最后一行文本无效的，那我们可以借助伪元素将文本的整体行数变为多行,代码如下 -->
+
+  
+
+   <!-- （如果要将after带来的高度消除掉，可以给box设置一个固定高度）
+
+要点：
+
+1、需要使用after，将伪元素放在需要两端对齐的元素后面，作为第二行；
+
+2、设定after的width为100%，生成第二行；
+
+3、设置为行内块元素，设置的width才有效。 -->  
+
+    <div class="box1">You want something. Go get it!</div>
+    
+    <div class="box2">You have a dream, you got to protect it.</div>
+
+   .box2{
+
+​     *text-align*: justify;
+
+   }
+
+   .box2::after{
+
+​     *content*:'';
+
+​     *width*: 100%;
+
+​     *display*: inline-block;
+
+
+
+   }
+
+######    *vertical-align*图片和文字对齐方式
+
+​      /* 用于图片的垂直对齐 添加到图片上 top上 middle居中 base基线，也是默认 buttom底部*/
+
+​       /* vertical-align: top; */
+
+​       *vertical-align*: base;
+
+######   *text-transform
+
+ 检索英文字母大小写  capitalize首字母大写 
+
+###### letter-spacing
+
+是CSS的一个属性，其作用是设置字符之间的距离。letter意为字符。
+
+###### word-spacing
+
+**（词间距，**添加每个单词之间的空白**）**
+
+​    *text-indent*: 2em;
+
+​      
+
+​      /* 检索英文字母大小写 1.首字母大写 */
+
+​      *text-transform*: capitalize;
+
+​      /* 2.全部大写 */
+
+​      /* text-transform: uppercase; */
+
+​      /* 3.全部小写 */
+
+​      /* text-transform: lowercase; */
+
+​      /* 字间距 控制汉字或英文字母的间距 */
+
+​      *letter-spacing*: 0.5em;
+
+​      /* 词间距 控制词英语单词间距 */
+
+​      *word-spacing*: 1em;
+
+​      /* 文本流控制 控制文本流 */
+
+###### 文字倾斜  italic oblique
+
+ *font-style*: italic;
+
+​      /* font-style: oblique; */
+
+/* 两个单元格之间的边框会出现重叠 合并相邻边框 */
+
+​      *border-collapse*: collapse;
+
+  只能这样包含否则h标签无效果  <caption>11<h3>小说排行榜</h3></caption>h标签不能套块级元素 特殊
+
+###### text-align
+
+**`text-align: center;应用场景`**：父盒子设置`text-align: center;`后，盒子里面的 `文字内容`、`行内元素`、`行内块元素`、 都可以水平居中对齐；而`块级元素一般是不可以水平居中`的。
+ 请注意，`块级元素一般是不可以水平居中`，是分以下两种情况的：
+ 情况一：`块级元素没有设置宽高(就会继承父盒子的宽高)`，且父盒子设置了`text-align: center;`的话，是可以水平居中的。
+ 情况二：`块级元素设置宽高`(就不会继承父盒子的宽高，以自己的宽高为准),也没有设置`margin:0 auto;`的时候，是不可以水平居中的。
+ so，`块级元素`想要水平居中，做法有两个：
+ 做法一：块级元素没有设置宽高，且父盒子设置了`text-align: center;`
+ 做法二：块级元素设置`margin:0 auto;`即可
+
+######   background
+
+   /* 综合写背景：颜色 背景图片 是否平铺 是否滚动 背景位置 */
+
+​      *background*: pink url(*images/d.jpg*) no-repeat fixed center center;
+
+   background-color:red；
+
+backgroud:url(images/d.jpg) no-repeat fixed center center;
+
+这样看上面压根不会显示   覆盖了
+
+/ * 背景图片 默认平铺 */
+
+​      *background-image*: url(*images/d.jpg*);
+
+​      *background-size*: 100px 100px;
+
+​      /* 背景图片不平铺 */
+
+​      *background-repeat*: no-repeat;
+
+​      /* 沿x轴repeat */
+
+​      /* background-repeat: repeat-x; */
+
+​      /* 沿y轴平铺 */
+
+​      *background-repeat*: repeat-y;
+
+​      /* 背景位置 左中 */
+
+​      /* background-position: left center;  */
+
+​      /* 背景图片居中 */
+
+​      *background-position*: 50% 50%;
+
+​      /* 背景位置 x轴100 y轴200 */
+
+​      /* background-position: 100px 200px; */
+
+ /* 固定背景图片 默认是scroll */
+
+​      *background-attachment*: fixed;
+
+###### margin padding
+
+首先行内元素是否具有盒子模型？
+
+答：行内元素同样具有盒子模型
+
+行内元素的padding和margin是否有效？
+
+答：
+
+- 行内元素的margin-left、margin-right和padding-left、padding-right属性设置都是有效的
+- 行内元素的margin-top、margin-bottom和padding-top、padding-bottom属性设置是无效的，但是必须注意的是，对于padding-top和padding-bottom的设置，从显示效果上来看是增加的，但其实设置是无效的，因为它们没有撑大盒子，并不会对周围的元素产生影响。
+- 特别要注意，img是一个特例，它虽然是行内元素，但它的性质不同于行内元素。对于img设置padding和margin都是有效的。
+
+验证padding-top和bottom对布局的影响，对span标签设置了相等的上下内边距
+
+padding在垂直方向上似乎是有效的，但是设置的上下内边距是相等的，如果padding-top和bottom真的有效，那么字体就应该垂直居中，但是并没有。所以行内元素竖直方向上的内边距是无效的
+
+###### 外边距塌陷问题
+
+   /* 只有紧挨父盒子的盒子设置上外边距 
+
+​    会导致父盒子塌陷 意思父盒子和子盒子一起往下掉
+
+​    因此给p设置margin-top  它会带整个盒子下移20px*/
+
+​    /* 解决方案 
+
+​    1.给父盒子添加浮动 float:left 
+
+​    2.给父盒子添加overflow:hidden
+
+​    3.给父盒子添加透明上边框
+
+​    4.给父盒子设置内边距把盒子挤下去
+
+111  <div>
+        <p></p>
+        <h1>肖申克的救赎</h1>
+​    </div>
+
+
+
+   *{
+
+​      *margin*: 0;
+
+​      *padding*: 0;
+
+​    }
+
+​    div{
+
+​      *width*: 400px;
+
+​      *height*: 400px;
+
+​      *background-color*: rgb(189, 50, 50);
+
+​      *float*:left;
+
+​      /* overflow: hidden; */
+
+​      /* border-top: 1px solid transparent; */
+
+​      /* padding:1px; */
+
+​    }
+
+​    /* 只有紧挨父盒子的盒子设置上外边距 
+
+​    会导致父盒子塌陷 意思父盒子和子盒子一起往下掉
+
+​    因此给p设置margin-top  它会带整个盒子下移20px*/
+
+​    /* 解决方案 
+
+​    1.给父盒子添加浮动 float:left 
+
+​    2.给父盒子添加overflow:hidden
+
+​    3.给父盒子添加透明上边框
+
+​    4.给父盒子设置内边距把盒子挤下去
+
+​    */
+
+​    p{
+
+​      *width*: 200px;
+
+​      *height*: 200px;
+
+​      *background-color*: rgb(33, 165, 55);
+
+​      *margin-top*: 20px;
+
+​    }
+
+  /* 只有紧挨父盒子的盒子设置上外边距 会导致父盒子塌陷 */
+
+​    /* h1设置上外边距不会影响父盒子  因为它上面有个p 一切正常
+
+​    有上外边距会使他远离上面的盒子 */
+
+   h1{
+
+
+
+​      *width*: 100px;
+
+​      *height*: 100px;
+
+​      *background-color*: rgb(192, 75, 140);
+
+​      *margin-top*: 20px;
+
+​    }
+
+###### 精灵图
+
+​      /* 精灵图 使用定位来写 目的：为了减少向服务器请求的次数 */
+
+###### 箭头函数
+
+第一个例子使用常规函数，第二个例子使用箭头函数。
+
+结果显示第一个例子返回两个不同的对象（window 和 button），第二个例子返回两次 window 对象，因为 window 对象是函数的“所有者”。
+
+
+
+```
+// 常规函数：
+hello = function() {
+  document.getElementById("demo").innerHTML += this;
+}
+
+// window 对象调用该函数：
+window.addEventListener("load", hello);
+
+// button 对象调用该函数：
+document.getElementById("btn").addEventListener("click", hello);
+```
+
+```
+因为 window 对象是函数的“所有者”。
+
+实例用了箭头函数，则 this 表示函数的拥有者
+
+// 箭头函数：
+hello = () => {
+  document.getElementById("demo").innerHTML += this;
+}
+
+// window 对象调用该函数：
+window.addEventListener("load", hello);
+
+// button 对象调用该函数：
+document.getElementById("btn").addEventListener("click", hello);
+```
+
+###### 边框写三角
+
+![](C:\Users\aa\Desktop\基础\images\1.png)
+
+当每一条边的颜色都不一样的时候，每两条边交汇的地方是一个斜角。
+
+其实这个斜角一直都存在，只是当我们两条边的颜色一样的时候看不出来而已，曾经也有人在面试的时候问到过这个问题：
+
+边框是什么形状的？大家现在可有答案了？
+
+不过从这里来看的话，虽然有一个斜角了，但是和三角形好像还是没有太大的关系啊？
+
+不着急，再往下走。当我们把盒子的宽高慢慢的减小，我们可能会发现一些不一样的东西；
